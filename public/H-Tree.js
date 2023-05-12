@@ -2,33 +2,40 @@
 //Add event listener to setup canvas when the page loads
 //makes sure the css and html are all ready before any code is run
 window.addEventListener('load', function(){
-    //Fractal Canvas
+
+    //I have two canvases, one canvas is in the foreground, I am drawing pretty detailed
+    //fractal patterns on it and it would take alot of computing power to draw every frame. 
+    //So the canvas in the background will be animated instead.
+
+    //Fractal Canvas setup
     const canvas = document.getElementById('canvas1');
     const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    //Background Canvas
+    //Background Canvas setup
     const bgcanvas = document.getElementById('canvas2');
     const bgctx = bgcanvas.getContext('2d');
     bgcanvas.width = window.innerWidth;
     bgcanvas.height = window.innerHeight;
 
     //BASIC CANVAS SETTINGS//
-    //add shadows to everything I draw in the canvas
+    //I add shadows to everything I draw in the fractal canvas
+    //this adds some depth to the pattern
     ctx.shadowColor='rgba(0,0,0,.5)';
     ctx.shadowOffsetX = 10;
     ctx.shadowOffsetY = 5;
     ctx.shadowBlur = 10;
+    //I have make rounded lines for a more organic fractal
     ctx.lineCap = "round";
 
     //FRACTAL EFFECT SETTINGS//
     //Determines the initial segment size, I make this relative to the viewing 
-    //screen so that any device will see the same thing
+    //screen so that any device will see the same thing.
     let size = canvas.width < canvas.height ? canvas.width * .2 : canvas.height * .2;
 
     //These variables are both constants because I want some complexity but not so much that
-    //the computer lags trying to process drawing the fractal//
+    //the computer lags trying to process drawing the fractal.
     //Determines the depth of the fractal
     const maxStep = 8;
     //Determines the number of segments per each branch off point
@@ -41,32 +48,57 @@ window.addEventListener('load', function(){
     let scale = 0.6;
     //Determines the branch angle
     let bAngle = .6;
-    //Fractal color which is randomly generated as a HSB value
+
+    //Fractal color which is randomly generated as a HSL value
+    //I want the tips of the fractal to be bright red, yellow, or orange
+    //and I want the stems to be a color 40 degrees on the color wheel
+    //from the tips
+    //This will help the tips contrast the background and really pop
+    //while the stems will be a similar color but still distinct
     let randColor = (Math.random() * 130)-70;
     let colorTip = 'hsl('+ randColor + ', 100%, 50%)';
     let color = 'hsl('+ (randColor - 40) + ', 100%, 50%)';
+    //I set the initial branch color here
     ctx.strokeStyle = color;
-    //canvas.style.backgroundColor = 'hsl(220, 100%, 20%)';
     //set width of the fractal lines
     let lineWidth = Math.floor(Math.random()*10 +10);
 
     //FRACTAL TREE SECTION
+    //The drawBranch function's argument will track
+    //how many times I iterate, since it is recursive
+    //I need an end condition
     function drawBranch(step){
+        //When step is greater than the maxStep constant then I 
+        //leave the function
         if (step > maxStep) return;
+        //When I've iterated a couple of times, I set the strokeStyle
+        //to the colorTip variable so all the rest of the iterations
+        //have the tip color applied.
         if (step > maxStep-4){
             ctx.strokeStyle = colorTip;
         }
 
+        //I draw the initial line starting from the middle of the canvas
+        //with the length being the initial size variable
         ctx.beginPath();
         ctx.moveTo(0,0);
         ctx.lineTo(size, 0);
         ctx.stroke();
 
+        //I draw the children branches here
+        //This loop iterates for as many branches as I want to draw
         for(let i = 0; i < branches; i++){
+            //I save the canvas settings (transforms and everything)
+            //translate to the new branch location
+            //scale the branch
             ctx.save();
             ctx.translate(size-(size/branches) * i,0);
             ctx.scale(scale,scale);
-
+            //save the canvas settings
+            //rotate the canvas by my angle variable
+            //and call this function (which draws a new branch at
+            //the saved canvas location) while increasing the step by 1
+            //and then restore the canvas settings to what they were before
             ctx.save();
             ctx.rotate(bAngle);
             drawBranch(step+1);
@@ -112,7 +144,7 @@ window.addEventListener('load', function(){
     }
     canvas.addEventListener('click', randomizeFractal);
 
-    //CIRCLES CLASS
+    //BACKGROUND CIRCLE CLASS
     class Circle {
         constructor(x, y, radius, color) {
             this.x = x;
@@ -141,7 +173,7 @@ window.addEventListener('load', function(){
         }
     }
 
-    //CREATE CIRCLES
+    //DRAW CIRCLES
     let circles;
     let circcolor;
     function bgdraw(){
