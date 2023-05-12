@@ -1,0 +1,36 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#canvas1{
+    background: rgba(0, 0, 0, 0);
+    position: absolute;
+    left: 0;
+    top: 0;
+    cursor: pointer;
+}
+
+#canvas2{
+    background: hsl(220, 100%, 20%);
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: -1;
+}
+
+/* #controls {
+    position:absolute;
+    padding: 10px;
+    border: 2px solid white;
+    left: 20px;
+    top: 20px;
+    width: 250px;
+    background-color:rgba(255,255,255,.15); 
+} */
+/* button{
+    padding: 10px 40px;
+    width: 225px;
+    font-size: 20px;
+} */
