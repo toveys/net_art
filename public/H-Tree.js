@@ -121,7 +121,7 @@ window.addEventListener('load', function(){
             this.color = color;
             this.radians = Math.random() * Math.PI * 2;
             this.velocity = 0.001;
-            this.distanceFromCenter = {x:Math.random()*1000, y:Math.random()*1000};
+            this.distanceFromCenter = {x:Math.random()*canvas.width, y:Math.random()*canvas.height};
 
             this.update = () => {
                 //Move circles over time
@@ -147,7 +147,7 @@ window.addEventListener('load', function(){
     function bgdraw(){
         circles = [];
 
-        for(let i=0; i<1000; i++){
+        for(let i=0; i<500; i++){
             circcolor = 'hsl('+ ((Math.random()* 20)+220) + ', 100%, 20%)';
             circles.push(new Circle(canvas.width/2, canvas.height/2, 50, circcolor));
         }
