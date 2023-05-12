@@ -10,7 +10,7 @@ window.addEventListener('load', function(){
 
     //Background Canvas
     const bgcanvas = document.getElementById('canvas2');
-    const bgctx = canvas.getContext('2d');
+    const bgctx = bgcanvas.getContext('2d');
     bgcanvas.width = window.innerWidth;
     bgcanvas.height = window.innerHeight;
 
@@ -50,10 +50,6 @@ window.addEventListener('load', function(){
     //set width of the fractal lines
     let lineWidth = Math.floor(Math.random()*10 +10);
 
-    //CONTROL BUTTON VARIABLE
-    const randomizeButton = document.getElementById('randomizeButton');
-
-
     //FRACTAL TREE SECTION
     function drawBranch(step){
         if (step > maxStep) return;
@@ -77,10 +73,9 @@ window.addEventListener('load', function(){
             ctx.restore();
 
             ctx.restore();
-
         }
-
     }
+
     //ROTATE FRACTAL TREE SECTION
     function rotateBranch(){
         //clears canvas before drawing new fractal
@@ -96,7 +91,7 @@ window.addEventListener('load', function(){
         }
         ctx.restore();
     }
-    rotateBranch()
+    rotateBranch();
 
     //RANDOMIZE FRACTAL BUTTON SECTION
     function randomizeFractal(){
@@ -117,6 +112,63 @@ window.addEventListener('load', function(){
     }
     canvas.addEventListener('click', randomizeFractal);
 
+    //CIRCLES CLASS
+    class Circle {
+        constructor(x, y, radius, color) {
+            this.x = x;
+            this.y = y;
+            this.radius = radius;
+            this.color = color;
+            this.radians = Math.random() * Math.PI * 2;
+            this.velocity = 0.001;
+            this.distanceFromCenter = {x:Math.random()*1000, y:Math.random()*1000};
+
+            this.update = () => {
+                //Move circles over time
+                this.radians += this.velocity;
+                this.x = x + Math.cos(this.radians)*this.distanceFromCenter.x;
+                this.y = y + Math.sin(this.radians)*this.distanceFromCenter.y;
+                this.draw();
+            };
+
+            this.draw = () => {
+                bgctx.beginPath();
+                bgctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+                bgctx.fillStyle = color;
+                bgctx.fill();
+                bgctx.closePath();
+            };
+        }
+    }
+
+    //CREATE CIRCLES
+    let circles;
+    let circcolor;
+    function bgdraw(){
+        circles = [];
+
+        for(let i=0; i<1000; i++){
+            circcolor = 'hsl('+ ((Math.random()* 20)+220) + ', 100%, 20%)';
+            circles.push(new Circle(canvas.width/2, canvas.height/2, 50, circcolor));
+        }
+        console.log(circles);
+    }
+    
+    //ANIMATE LOOP
+    function animate(){
+        requestAnimationFrame(animate);
+        bgctx.clearRect(0,0,bgcanvas.width,bgcanvas.height);
+
+        // console.log("hi");
+        circles.forEach(Circle => {
+            Circle.update();
+        });
+    }
+
+    bgdraw();
+    animate();
+
+    //CANVAS RESIZE
     window.addEventListener('resize', function(){
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
