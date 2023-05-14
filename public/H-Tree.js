@@ -242,6 +242,7 @@ window.addEventListener('load', function(){
     //Since the randomize fractal function doesn't get called, the redrawn fractal 
     //retains its settings.
     window.addEventListener('resize', function(){
+        console.log('resized');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         bgcanvas.width = window.innerWidth;
